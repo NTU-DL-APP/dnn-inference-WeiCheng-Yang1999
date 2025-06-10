@@ -1,4 +1,3 @@
-
 import numpy as np
 import json
 
@@ -7,17 +6,17 @@ def relu(x):
     return np.maximum(0, x)
 
 def softmax(x):
-    x = np.array(x)
+    x = np.asarray(x)  # 確保輸入是 numpy array
     if x.ndim == 1:
         x = x - np.max(x)
-        e_x = np.exp(x)
-        return e_x / np.sum(e_x)
+        exp_x = np.exp(x)
+        return exp_x / np.sum(exp_x, keepdims=False)
     elif x.ndim == 2:
         x = x - np.max(x, axis=1, keepdims=True)
-        e_x = np.exp(x)
-        return e_x / np.sum(e_x, axis=1, keepdims=True)
+        exp_x = np.exp(x)
+        return exp_x / np.sum(exp_x, axis=1, keepdims=True)
     else:
-        raise ValueError("softmax only supports 1D or 2D arrays")
+        raise ValueError("Input to softmax must be 1D or 2D")
 
 # === Flatten ===
 def flatten(x):
@@ -27,8 +26,7 @@ def flatten(x):
 def dense(x, W, b):
     return x @ W + b
 
-# Infer TensorFlow h5 model using numpy
-# Support only Dense, Flatten, relu, softmax now
+# === Inference function ===
 def nn_forward_h5(model_arch, weights, data):
     x = data
     for layer in model_arch:
@@ -50,6 +48,6 @@ def nn_forward_h5(model_arch, weights, data):
 
     return x
 
-# You are free to replace nn_forward_h5() with your own implementation 
+# === Public API ===
 def nn_inference(model_arch, weights, data):
     return nn_forward_h5(model_arch, weights, data)
