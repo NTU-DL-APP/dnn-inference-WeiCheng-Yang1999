@@ -6,7 +6,8 @@ def relu(x):
     return np.maximum(0, x)
 
 def softmax(x):
-    e_x = np.exp(x - np.max(x, axis=-1, keepdims=True))  # 防止溢位
+    x = x - np.max(x, axis=-1, keepdims=True)  # 防止 overflow
+    e_x = np.exp(x)
     return e_x / np.sum(e_x, axis=-1, keepdims=True)
 
 # === Flatten ===
