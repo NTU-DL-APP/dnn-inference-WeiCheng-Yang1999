@@ -1,3 +1,4 @@
+
 import numpy as np
 import json
 
@@ -6,12 +7,17 @@ def relu(x):
     return np.maximum(0, x)
 
 def softmax(x):
+    x = np.array(x)
     if x.ndim == 1:
-        x = x - np.max(x)  # 防止 overflow
-        return np.exp(x) / np.sum(np.exp(x))
-    else:
+        x = x - np.max(x)
+        e_x = np.exp(x)
+        return e_x / np.sum(e_x)
+    elif x.ndim == 2:
         x = x - np.max(x, axis=1, keepdims=True)
-        return np.exp(x) / np.sum(np.exp(x), axis=1, keepdims=True)
+        e_x = np.exp(x)
+        return e_x / np.sum(e_x, axis=1, keepdims=True)
+    else:
+        raise ValueError("softmax only supports 1D or 2D arrays")
 
 # === Flatten ===
 def flatten(x):
@@ -44,8 +50,6 @@ def nn_forward_h5(model_arch, weights, data):
 
     return x
 
-
 # You are free to replace nn_forward_h5() with your own implementation 
 def nn_inference(model_arch, weights, data):
     return nn_forward_h5(model_arch, weights, data)
-    
